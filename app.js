@@ -2,6 +2,23 @@
 let currentUser = null;
 let mealTrains = [];
 let joinRequests = [];
+let idCounter = Date.now();
+
+// Utility function to escape HTML and prevent XSS
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+// Generate unique ID
+function generateId() {
+    return idCounter++;
+}
 
 // Load data from localStorage
 function loadData() {
@@ -45,7 +62,7 @@ function login() {
     const username = document.getElementById('usernameInput').value.trim();
     
     if (username === '') {
-        alert('Please enter a username');
+        alert('Username cannot be empty. Please enter a valid username.');
         return;
     }
     
@@ -99,7 +116,7 @@ function createMealTrain(e) {
     const ingredients = ingredientsText.split('\n').filter(i => i.trim() !== '');
     
     const newMeal = {
-        id: Date.now(),
+        id: generateId(),
         name: mealName,
         ingredients: ingredients,
         creator: currentUser,
@@ -130,44 +147,82 @@ function renderMeals() {
         return;
     }
     
-    mealsList.innerHTML = otherMeals.map(meal => {
+    mealsList.innerHTML = '';
+    otherMeals.forEach(meal => {
         const userRequest = joinRequests.find(
             req => req.mealId === meal.id && req.username === currentUser
         );
         
-        let joinButtonHTML = '';
+        const mealCard = document.createElement('div');
+        mealCard.className = 'meal-card';
+        
+        const title = document.createElement('h3');
+        title.textContent = meal.name;
+        mealCard.appendChild(title);
+        
+        const creator = document.createElement('div');
+        creator.className = 'creator';
+        creator.textContent = `Created by: ${meal.creator}`;
+        mealCard.appendChild(creator);
+        
+        const ingredientsSection = document.createElement('div');
+        ingredientsSection.className = 'ingredients';
+        const ingredientsTitle = document.createElement('h4');
+        ingredientsTitle.textContent = 'Ingredients:';
+        ingredientsSection.appendChild(ingredientsTitle);
+        const ingredientsList = document.createElement('ul');
+        meal.ingredients.forEach(ing => {
+            const li = document.createElement('li');
+            li.textContent = ing;
+            ingredientsList.appendChild(li);
+        });
+        ingredientsSection.appendChild(ingredientsList);
+        mealCard.appendChild(ingredientsSection);
+        
+        const membersSection = document.createElement('div');
+        membersSection.className = 'members';
+        const membersTitle = document.createElement('h4');
+        membersTitle.textContent = `Members (${meal.members.length}):`;
+        membersSection.appendChild(membersTitle);
+        const membersList = document.createElement('ul');
+        meal.members.forEach(member => {
+            const li = document.createElement('li');
+            li.textContent = `👤 ${member}`;
+            membersList.appendChild(li);
+        });
+        membersSection.appendChild(membersList);
+        mealCard.appendChild(membersSection);
+        
+        const actionsSection = document.createElement('div');
+        actionsSection.className = 'actions';
+        
         if (!userRequest) {
-            joinButtonHTML = `<button class="join-btn" onclick="requestToJoin(${meal.id})">Request to Join</button>`;
+            const joinBtn = document.createElement('button');
+            joinBtn.className = 'join-btn';
+            joinBtn.textContent = 'Request to Join';
+            joinBtn.addEventListener('click', () => requestToJoin(meal.id));
+            actionsSection.appendChild(joinBtn);
         } else if (userRequest.status === 'pending') {
-            joinButtonHTML = `<button class="join-btn" disabled>Request Pending</button>`;
+            const joinBtn = document.createElement('button');
+            joinBtn.className = 'join-btn';
+            joinBtn.textContent = 'Request Pending';
+            joinBtn.disabled = true;
+            actionsSection.appendChild(joinBtn);
         } else if (userRequest.status === 'approved') {
-            joinButtonHTML = `<span class="status-badge status-approved">Joined</span>`;
+            const badge = document.createElement('span');
+            badge.className = 'status-badge status-approved';
+            badge.textContent = 'Joined';
+            actionsSection.appendChild(badge);
         } else if (userRequest.status === 'rejected') {
-            joinButtonHTML = `<span class="status-badge status-rejected">Request Rejected</span>`;
+            const badge = document.createElement('span');
+            badge.className = 'status-badge status-rejected';
+            badge.textContent = 'Request Rejected';
+            actionsSection.appendChild(badge);
         }
         
-        return `
-            <div class="meal-card">
-                <h3>${meal.name}</h3>
-                <div class="creator">Created by: ${meal.creator}</div>
-                <div class="ingredients">
-                    <h4>Ingredients:</h4>
-                    <ul>
-                        ${meal.ingredients.map(ing => `<li>${ing}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="members">
-                    <h4>Members (${meal.members.length}):</h4>
-                    <ul>
-                        ${meal.members.map(member => `<li>👤 ${member}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="actions">
-                    ${joinButtonHTML}
-                </div>
-            </div>
-        `;
-    }).join('');
+        mealCard.appendChild(actionsSection);
+        mealsList.appendChild(mealCard);
+    });
 }
 
 // Render user's own meal trains
@@ -180,25 +235,45 @@ function renderMyMeals() {
         return;
     }
     
-    myMealsList.innerHTML = myMeals.map(meal => {
-        return `
-            <div class="meal-card">
-                <h3>${meal.name}</h3>
-                <div class="ingredients">
-                    <h4>Ingredients:</h4>
-                    <ul>
-                        ${meal.ingredients.map(ing => `<li>${ing}</li>`).join('')}
-                    </ul>
-                </div>
-                <div class="members">
-                    <h4>Members (${meal.members.length}):</h4>
-                    <ul>
-                        ${meal.members.map(member => `<li>👤 ${member}</li>`).join('')}
-                    </ul>
-                </div>
-            </div>
-        `;
-    }).join('');
+    myMealsList.innerHTML = '';
+    myMeals.forEach(meal => {
+        const mealCard = document.createElement('div');
+        mealCard.className = 'meal-card';
+        
+        const title = document.createElement('h3');
+        title.textContent = meal.name;
+        mealCard.appendChild(title);
+        
+        const ingredientsSection = document.createElement('div');
+        ingredientsSection.className = 'ingredients';
+        const ingredientsTitle = document.createElement('h4');
+        ingredientsTitle.textContent = 'Ingredients:';
+        ingredientsSection.appendChild(ingredientsTitle);
+        const ingredientsList = document.createElement('ul');
+        meal.ingredients.forEach(ing => {
+            const li = document.createElement('li');
+            li.textContent = ing;
+            ingredientsList.appendChild(li);
+        });
+        ingredientsSection.appendChild(ingredientsList);
+        mealCard.appendChild(ingredientsSection);
+        
+        const membersSection = document.createElement('div');
+        membersSection.className = 'members';
+        const membersTitle = document.createElement('h4');
+        membersTitle.textContent = `Members (${meal.members.length}):`;
+        membersSection.appendChild(membersTitle);
+        const membersList = document.createElement('ul');
+        meal.members.forEach(member => {
+            const li = document.createElement('li');
+            li.textContent = `👤 ${member}`;
+            membersList.appendChild(li);
+        });
+        membersSection.appendChild(membersList);
+        mealCard.appendChild(membersSection);
+        
+        myMealsList.appendChild(mealCard);
+    });
 }
 
 // Render pending requests for user's meal trains
@@ -217,27 +292,52 @@ function renderRequests() {
         return;
     }
     
-    requestsList.innerHTML = pendingRequests.map(request => {
+    requestsList.innerHTML = '';
+    pendingRequests.forEach(request => {
         const meal = mealTrains.find(m => m.id === request.mealId);
         
-        return `
-            <div class="request-card">
-                <div class="request-info">
-                    <strong>${request.username}</strong> wants to join <strong>${meal.name}</strong>
-                </div>
-                <div class="actions">
-                    <button class="approve-btn" onclick="approveRequest(${request.id})">Approve</button>
-                    <button class="reject-btn" onclick="rejectRequest(${request.id})">Reject</button>
-                </div>
-            </div>
-        `;
-    }).join('');
+        const requestCard = document.createElement('div');
+        requestCard.className = 'request-card';
+        
+        const requestInfo = document.createElement('div');
+        requestInfo.className = 'request-info';
+        
+        const usernameStrong = document.createElement('strong');
+        usernameStrong.textContent = request.username;
+        requestInfo.appendChild(usernameStrong);
+        
+        requestInfo.appendChild(document.createTextNode(' wants to join '));
+        
+        const mealNameStrong = document.createElement('strong');
+        mealNameStrong.textContent = meal.name;
+        requestInfo.appendChild(mealNameStrong);
+        
+        requestCard.appendChild(requestInfo);
+        
+        const actionsSection = document.createElement('div');
+        actionsSection.className = 'actions';
+        
+        const approveBtn = document.createElement('button');
+        approveBtn.className = 'approve-btn';
+        approveBtn.textContent = 'Approve';
+        approveBtn.addEventListener('click', () => approveRequest(request.id));
+        actionsSection.appendChild(approveBtn);
+        
+        const rejectBtn = document.createElement('button');
+        rejectBtn.className = 'reject-btn';
+        rejectBtn.textContent = 'Reject';
+        rejectBtn.addEventListener('click', () => rejectRequest(request.id));
+        actionsSection.appendChild(rejectBtn);
+        
+        requestCard.appendChild(actionsSection);
+        requestsList.appendChild(requestCard);
+    });
 }
 
 // Request to join a meal train
 function requestToJoin(mealId) {
     const newRequest = {
-        id: Date.now(),
+        id: generateId(),
         mealId: mealId,
         username: currentUser,
         status: 'pending',
