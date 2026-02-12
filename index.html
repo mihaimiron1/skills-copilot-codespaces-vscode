@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Train</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍽️ Meal Train</h1>
+            <div id="userSection">
+                <input type="text" id="usernameInput" placeholder="Enter your username">
+                <button id="loginBtn">Login</button>
+            </div>
+            <div id="loggedInSection" style="display: none;">
+                <span id="currentUser"></span>
+                <button id="logoutBtn">Logout</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Create Meal Train Section -->
+            <section id="createSection" style="display: none;">
+                <h2>Create a Meal Train</h2>
+                <form id="createMealForm">
+                    <div class="form-group">
+                        <label for="mealName">Meal Name:</label>
+                        <input type="text" id="mealName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ingredients">Ingredients (one per line):</label>
+                        <textarea id="ingredients" rows="5" required placeholder="Chicken&#10;Rice&#10;Vegetables"></textarea>
+                    </div>
+                    <button type="submit">Create Meal Train</button>
+                </form>
+            </section>
+
+            <!-- Meal Trains List -->
+            <section id="mealsSection" style="display: none;">
+                <h2>Available Meal Trains</h2>
+                <div id="mealsList"></div>
+            </section>
+
+            <!-- My Meal Trains -->
+            <section id="myMealsSection" style="display: none;">
+                <h2>My Meal Trains</h2>
+                <div id="myMealsList"></div>
+            </section>
+
+            <!-- Join Requests -->
+            <section id="requestsSection" style="display: none;">
+                <h2>Pending Join Requests</h2>
+                <div id="requestsList"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
