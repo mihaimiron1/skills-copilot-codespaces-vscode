@@ -1,0 +1,263 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+
+#userSection, #loggedInSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#usernameInput {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 250px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+#logoutBtn {
+    background: #f44336;
+}
+
+#logoutBtn:hover {
+    background: #da190b;
+}
+
+main {
+    padding: 30px;
+}
+
+section {
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.meal-card {
+    background: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.meal-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.meal-card h3 {
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.meal-card .creator {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.meal-card .ingredients {
+    margin-top: 15px;
+}
+
+.meal-card .ingredients h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.meal-card .ingredients ul {
+    list-style-position: inside;
+    color: #555;
+}
+
+.meal-card .ingredients li {
+    padding: 5px 0;
+}
+
+.meal-card .actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.meal-card button.join-btn {
+    background: #2196F3;
+}
+
+.meal-card button.join-btn:hover {
+    background: #0b7dda;
+}
+
+.meal-card button.join-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.meal-card .members {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.meal-card .members h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.meal-card .members ul {
+    list-style: none;
+}
+
+.meal-card .members li {
+    padding: 5px 0;
+    color: #555;
+}
+
+.request-card {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.request-card .request-info {
+    margin-bottom: 15px;
+}
+
+.request-card .request-info strong {
+    color: #667eea;
+}
+
+.request-card .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.request-card button.approve-btn {
+    background: #4CAF50;
+}
+
+.request-card button.approve-btn:hover {
+    background: #45a049;
+}
+
+.request-card button.reject-btn {
+    background: #f44336;
+}
+
+.request-card button.reject-btn:hover {
+    background: #da190b;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.status-pending {
+    background: #ffc107;
+    color: #333;
+}
+
+.status-approved {
+    background: #4CAF50;
+    color: white;
+}
+
+.status-rejected {
+    background: #f44336;
+    color: white;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+    font-size: 18px;
+}
